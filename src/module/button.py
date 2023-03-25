@@ -17,6 +17,9 @@ class Button:
     def get_function(self):
         return self._function
 
+    def get_text(self):
+        return self._text
+
     def get_to_menu(self):
         return self._to_menu
 
