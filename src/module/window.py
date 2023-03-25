@@ -51,9 +51,3 @@ class Window:
     def name(self, new_name):
         self._name = new_name
         pygame.display.set_caption(self._name)
-
-
-pygame.init()
-info = pygame.display.Info()
-WIDTH, HEIGHT = info.current_w, info.current_h
-window = Window((WIDTH, HEIGHT), "Kicker", 60, None)

@@ -16,7 +16,8 @@ def event_handler(event, window):
 
 def main():
     global running
-    window = Window((1920, 1080), "Kicker", 60, None)
+    pygame.init()
+    window = Window((1620, 1080), "Kicker", 60, None)
 
     while running:
         window.get_clock().tick(window.get_fps())
