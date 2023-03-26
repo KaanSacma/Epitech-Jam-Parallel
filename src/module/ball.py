@@ -11,16 +11,16 @@ class Ball(pygame.sprite.Sprite):
         self._speed = 5
         self._direction = [1, 1]
 
-    def update(self):
+    def update(self, kicker):
         self._rect.x += self._speed * self._direction[0]
         self._rect.y += self._speed * self._direction[1]
-        if self._rect.top < 0:
+        if self._rect.top < (900 / 2) - kicker.size_y / 2:
             self._direction[1] *= -1
-        if self._rect.bottom > 1080:
+        if self._rect.bottom > (900 / 2) + kicker.size_y / 2:
             self._direction[1] *= -1
-        if self._rect.left < 0:
+        if self._rect.left < (1600 / 2) - kicker.size_x / 2:
             self._direction[0] *= -1
-        if self._rect.right > 1920:
+        if self._rect.right > (1600 / 2) + kicker.size_x / 2:
             self._direction[0] *= -1
 
     def set_speed(self, speed):

@@ -18,8 +18,8 @@ def create_menu():
         Image("./assets/buttons/blue_button_onClick.png").get()
     ]
     buttons = [
-        Button(images, [(1920 / 2) - 95, 40], None, Text("Play", "./assets/fonts/Kenney Pixel.ttf", 32, WHITE)),
-        Button(images, [(1920 / 2) - 95, 120], close_game, Text("Quit", "./assets/fonts/Kenney Pixel.ttf", 32, WHITE))
+        Button(images, [(1600 / 2) - 95, 300], None, Text("Play", "./assets/fonts/Kenney Pixel.ttf", 32, WHITE)),
+        Button(images, [(1600 / 2) - 95, 440], close_game, Text("Quit", "./assets/fonts/Kenney Pixel.ttf", 32, WHITE))
     ]
     MainMenu = Menu(Image("./assets/images/background.jpeg").get(), buttons, "MainMenu")
     return MainMenu
