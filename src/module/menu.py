@@ -20,7 +20,7 @@ class Menu:
 
     def draw_background(self, window):
         window.fill(BLACK)
-        window.blit(self._background, self._background_rect)
+        window.blit(self._background, (-200, 0))
 
     def draw_buttons(self, window, outline=None):
         for button in self._buttons:
