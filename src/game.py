@@ -2,12 +2,13 @@ from module.window import Window
 from module.ball import Ball
 from module.kicker import Kicker
 from module.colors import *
+from module.image import *
 import pygame
 
 
 gameRunning = True
-ball = Ball([1600 / 2, 50], (10, 10), ORANGE)
-kicker = Kicker(1200, 600)
+ball = Ball([1600 / 2, 900 / 2], (10, 10), Image("./assets/images/ball.jpeg").get())
+kicker = Kicker(1200, 600, Image("./assets/images/KICKer.jpg").get())
 
 
 def event_game_handler(event, window):
@@ -45,18 +46,18 @@ def draw_donut_circle(window):
     circle_y = 900 / 2
 
     pygame.draw.circle(window, WHITE, (circle_x, circle_y), circle_radius)
-    pygame.draw.circle(window, BLACK, (circle_x, circle_y), circle_radius-circle_thickness)
+    pygame.draw.circle(window, GREEN,(circle_x, circle_y), circle_radius-circle_thickness)
 
 
 def drawField(window):
-    pygame.draw.rect(window, BLACK, (0, 0, 1600, 900))
+    ##pygame.draw.rect(window, BLACK, (0, 0, 1600, 900))
 
     line = pygame.Surface((10, kicker.size_y))
     line.fill(WHITE)
     vertical_line = pygame.transform.rotate(line, 180)
     rect = vertical_line.get_rect()
 
-    draw_donut_circle(window)
+    #draw_donut_circle(window)
 
     rect.center = (1600 / 2, 900/2)
     window.blit(vertical_line, rect) # ligne milieu
@@ -85,6 +86,7 @@ def gameLoop(window, running):
         window.get_clock().tick(window.get_fps())
         for event in pygame.event.get():
             event_game_handler(event, window)
+        kicker.draw_background(window.get_screen())
         drawField(window.get_screen())
         ball.update(kicker)
         ball.draw(window.get_screen())

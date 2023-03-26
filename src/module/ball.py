@@ -1,26 +1,27 @@
 import pygame
-
+from module.colors import BLACK
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, pos, radius, color):
+    def __init__(self, pos, radius, background):
         pygame.sprite.Sprite.__init__(self)
         self._image = pygame.Surface(radius)
-        self._image.fill(color)
+        self._background = background
+        self._background_rect = self._background.get_rect()
         self._rect = self._image.get_rect()
-        self._rect.center = pos
+        self._background_rect.center = pos
         self._speed = 5
         self._direction = [1, 1]
 
     def update(self, kicker):
-        self._rect.x += self._speed * self._direction[0]
-        self._rect.y += self._speed * self._direction[1]
-        if self._rect.top < (900 / 2) - kicker.size_y / 2:
+        self._background_rect.x += self._speed * self._direction[0]
+        self._background_rect.y += self._speed * self._direction[1]
+        if self._background_rect.top < (900 / 2) - kicker.size_y / 2:
             self._direction[1] *= -1
-        if self._rect.bottom > (900 / 2) + kicker.size_y / 2:
+        if self._background_rect.bottom > (900 / 2) + kicker.size_y / 2:
             self._direction[1] *= -1
-        if self._rect.left < (1600 / 2) - kicker.size_x / 2:
+        if self._background_rect.left < (1600 / 2) - kicker.size_x / 2:
             self._direction[0] *= -1
-        if self._rect.right > (1600 / 2) + kicker.size_x / 2:
+        if self._background_rect.right > (1600 / 2) + kicker.size_x / 2:
             self._direction[0] *= -1
 
     def set_speed(self, speed):
@@ -30,17 +31,17 @@ class Ball(pygame.sprite.Sprite):
         self._direction = direction
 
     def set_spawn(self, pos):
-        self._rect.center = pos
+        self._background_rect.center = pos
 
     def get_pos(self):
-        return self._rect.center
+        return self._background_rect.center
 
     def get_radius(self):
-        return self._rect.width
+        return self._background_rect.width
 
-    def get_color(self):
-        return self._image.get_at((0, 0))
+    def draw_background(self, window):
+        window.blit(self._background, self.get_pos())
 
     def draw(self, window):
-        pygame.draw.circle(window, self.get_color(), self.get_pos(), self.get_radius())
-
+        self.draw_background(window)
+        ##pygame.draw.circle(window, BLACK, self.get_pos(), self.get_radius())
