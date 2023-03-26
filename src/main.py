@@ -2,6 +2,7 @@ import pygame
 from module.window import Window
 from menu import create_menu
 from game import gameLoop
+import sounds
 
 running = True
 currentMenu = create_menu()
@@ -23,6 +24,7 @@ def event_handler(event, window):
                 if currentMenu.get_button(i).get_function() is not None:
                     currentMenu.get_button(i).execute_function()
                 elif currentMenu.get_button(i).get_text().get_text() == "Play":
+                    sounds.buttonClick.play()
                     gameLoop(window, True)
                 return ()
     elif event.type == pygame.MOUSEMOTION:

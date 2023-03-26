@@ -2,6 +2,7 @@ from module.window import Window
 from module.ball import Ball
 from module.colors import *
 import pygame
+import sounds
 
 
 gameRunning = True
@@ -17,8 +18,10 @@ def event_game_handler(event, window):
         elif event.key == pygame.K_F12:
             window.set_fullscreen()
         elif event.key == pygame.K_z:
+            sounds.replaceBall.play()
             setBallSpawnUp()
         elif event.key == pygame.K_s:
+            sounds.replaceBall.play()
             setBallSpawnDown()
     elif event.type == pygame.QUIT:
         gameRunning = False
