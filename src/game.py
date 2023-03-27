@@ -8,11 +8,18 @@ import pygame
 
 gameRunning = True
 ball = Ball([1600 / 2, 900 / 2], (10, 10), Image("./assets/images/ball.jpeg").get())
+kicker = Kicker(1200, 600)
+z_pressed = False
+s_pressed = False
+up_pressed = False
+down_pressed = False
+e_pressed = False
+ZERO_pressed = False
 kicker = Kicker(1200, 600, Image("./assets/images/KICKer.jpg").get())
 
 
 def event_game_handler(event, window):
-    global gameRunning
+    global gameRunning, z_pressed, s_pressed, up_pressed, down_pressed, kicker, ball
 
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_ESCAPE:
@@ -20,9 +27,34 @@ def event_game_handler(event, window):
         elif event.key == pygame.K_F12:
             window.set_fullscreen()
         elif event.key == pygame.K_z:
-            setBallSpawnUp()
+            z_pressed = True
         elif event.key == pygame.K_s:
-            setBallSpawnDown()
+            s_pressed = True
+        elif event.key == pygame.K_UP:
+            up_pressed = True
+        elif event.key == pygame.K_DOWN:
+            down_pressed = True
+        elif event.key == pygame.K_e:
+            e_pressed = True
+        elif event.key == pygame.K_KP0:
+            ZERO_pressed = True
+
+    if event.type == pygame.KEYUP:
+        if event.key == pygame.K_z:
+            z_pressed = False
+        elif event.key == pygame.K_s:
+            s_pressed = False
+        elif event.key == pygame.K_UP:
+            up_pressed = False
+        elif event.key == pygame.K_DOWN:
+            down_pressed = False
+        elif event.key == pygame.K_e:
+            e_pressed = False
+            kicker.kick(0, ball)
+        elif event.key == pygame.K_KP0:
+            ZERO_pressed = False
+            kicker.kick(1, ball)
+
     elif event.type == pygame.QUIT:
         gameRunning = False
 
@@ -50,8 +82,6 @@ def draw_donut_circle(window):
 
 
 def drawField(window):
-    ##pygame.draw.rect(window, BLACK, (0, 0, 1600, 900))
-
     line = pygame.Surface((10, kicker.size_y))
     line.fill(WHITE)
     vertical_line = pygame.transform.rotate(line, 180)
@@ -77,6 +107,8 @@ def drawField(window):
     rect.center = (1600 / 2, 900 / 2 - kicker.size_y/2)
     window.blit(horizontal_line, rect)  # ligne bas
 
+    kicker.draw(window)
+
 
 def gameLoop(window, running):
     global gameRunning
@@ -86,6 +118,18 @@ def gameLoop(window, running):
         window.get_clock().tick(window.get_fps())
         for event in pygame.event.get():
             event_game_handler(event, window)
+        if z_pressed:
+            kicker.playerMovement(0, -1)
+        if s_pressed:
+            kicker.playerMovement(0, 1)
+        if up_pressed:
+            kicker.playerMovement(1, -1)
+        if down_pressed:
+            kicker.playerMovement(1, 1)
+        if e_pressed:
+            kicker.charging(0)
+        if ZERO_pressed:
+            kicker.charging(1)
         kicker.draw_background(window.get_screen())
         drawField(window.get_screen())
         ball.update(kicker)
