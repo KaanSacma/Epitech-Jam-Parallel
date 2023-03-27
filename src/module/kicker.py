@@ -1,4 +1,5 @@
 import pygame
+from module.colors import BLACK
 
 class Fooser:
     def __init__(self, x, y):
@@ -94,7 +95,7 @@ class Bar:
 
 
 class Kicker:
-    def __init__(self, size_x, size_y):
+    def __init__(self, size_x, size_y, background):
         self.size_x = size_x
         self.size_y = size_y
         self.bars = list()
@@ -104,6 +105,8 @@ class Kicker:
         self.bars.append(Bar(3, 0, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 4 + 30))
         self.bars.append(Bar(2, 1, (self.size_y - 300), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 5 + 60))
         self.bars.append(Bar(1, 1, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 6 + 100))
+        self._background = background
+        self._background_rect = self._background.get_rect()
 
     def playerMovement(self, player, direction):
         for bar in self.bars:
@@ -124,3 +127,9 @@ class Kicker:
             if bar._team == player:
                 bar.kick(ball)
 
+    def draw_background(self, window):
+        window.fill(BLACK)
+        window.blit(self._background, (0, 0))
+
+    def draw(self, window, outline=None):
+        self.draw_background(window)

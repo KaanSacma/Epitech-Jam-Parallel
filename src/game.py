@@ -2,11 +2,12 @@ from module.window import Window
 from module.ball import Ball
 from module.kicker import Kicker
 from module.colors import *
+from module.image import *
 import pygame
 
 
 gameRunning = True
-ball = Ball([1600 / 2, 900 / 2], (10, 10), ORANGE)
+ball = Ball([1600 / 2, 900 / 2], (10, 10), Image("./assets/images/ball.jpeg").get())
 kicker = Kicker(1200, 600)
 z_pressed = False
 s_pressed = False
@@ -14,6 +15,7 @@ up_pressed = False
 down_pressed = False
 e_pressed = False
 ZERO_pressed = False
+kicker = Kicker(1200, 600, Image("./assets/images/KICKer.jpg").get())
 
 
 def event_game_handler(event, window):
@@ -76,19 +78,16 @@ def draw_donut_circle(window):
     circle_y = 900 / 2
 
     pygame.draw.circle(window, WHITE, (circle_x, circle_y), circle_radius)
-    pygame.draw.circle(window, BLACK, (circle_x, circle_y), circle_radius-circle_thickness)
+    pygame.draw.circle(window, GREEN,(circle_x, circle_y), circle_radius-circle_thickness)
 
 
 def drawField(window):
-    global kicker
-    pygame.draw.rect(window, BLACK, (0, 0, 1600, 900))
-
     line = pygame.Surface((10, kicker.size_y))
     line.fill(WHITE)
     vertical_line = pygame.transform.rotate(line, 180)
     rect = vertical_line.get_rect()
 
-    draw_donut_circle(window)
+    #draw_donut_circle(window)
 
     rect.center = (1600 / 2, 900/2)
     window.blit(vertical_line, rect) # ligne milieu
@@ -131,6 +130,7 @@ def gameLoop(window, running):
             kicker.charging(0)
         if ZERO_pressed:
             kicker.charging(1)
+        kicker.draw_background(window.get_screen())
         drawField(window.get_screen())
         ball.update(kicker)
         ball.draw(window.get_screen())
