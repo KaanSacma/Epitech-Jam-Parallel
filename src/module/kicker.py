@@ -12,8 +12,8 @@ class Fooser:
         self._y = y
 
     def add_force(self, ball, direction, power):
-        force_x = ball._rect.x - self._x
-        force_y = ball._rect.y - self._y
+        force_x = ball._background_rect.x - self._x
+        force_y = ball._background_rect.y - self._y
         force_x *= 10
         force_y *= 10
         force_x += direction * 500 + power
@@ -26,8 +26,8 @@ class Fooser:
             self._chargingPower = 400
 
     def kick(self, ball, player):
-        if ball._rect.right < self._x + 50 and ball._rect.left > self._x - 50:
-            if ball._rect.top < self._y + 30 and ball._rect.bottom > self._y - 30:
+        if ball._background_rect.right < self._x + 50 and ball._background_rect.left > self._x - 50:
+            if ball._background_rect.top < self._y + 30 and ball._background_rect.bottom > self._y - 30:
                 if player == 0:
                     if ball._direction[0] < 0:
                         ball._direction[0] *= -1
@@ -40,8 +40,9 @@ class Fooser:
 
 
 class Bar:
-    def __init__(self, nb, team, size, x):
+    def __init__(self, nb, team, size, x, player_sprite):
         self._number = nb
+        self.player_sprite = player_sprite
         self._team = team
         self._x = x
         self._y = (900/2)
@@ -71,17 +72,25 @@ class Bar:
         color = (0, 0, 255)
         if self._team == 1:
             color = (255, 0, 0)
-        for fooser in self._foosers:
-            player_line = pygame.Surface((40, 40))
-            player_line.fill(color)
-            rect = player_line.get_rect()
-            rect.center = (fooser._x, fooser._y)
-            window.blit(player_line, rect)
-        line = pygame.Surface((10, self.size))
+        line = pygame.Surface((4, self.size))
         line.fill(color)
         rect = line.get_rect()
         rect.center = (self._x, self._y)
         window.blit(line, rect)
+        og_sprite = self.player_sprite
+        for fooser in self._foosers:
+            if fooser._chargingPower > 0:
+                self.player_sprite = pygame.transform.rotate(self.player_sprite, -45 + 90 * self._team)
+            else:
+                self.player_sprite = pygame.transform.rotate(self.player_sprite, 0)
+            if fooser._chargingPower > 0:
+                if self._team == 0:
+                    window.blit(self.player_sprite, (fooser._x - 45, fooser._y - 45))
+                else:
+                    window.blit(self.player_sprite, (fooser._x - 30, fooser._y - 45))
+            else:
+                window.blit(self.player_sprite, (fooser._x - 30, fooser._y - 30))
+            self.player_sprite = og_sprite
 
     def kick(self, ball):
         for fooser in self._foosers:
@@ -95,16 +104,16 @@ class Bar:
 
 
 class Kicker:
-    def __init__(self, size_x, size_y, background):
+    def __init__(self, size_x, size_y, background, player_sprite):
         self.size_x = size_x
         self.size_y = size_y
         self.bars = list()
-        self.bars.append(Bar(1, 0, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 1 - 100))
-        self.bars.append(Bar(2, 0, (self.size_y - 300), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 2 - 60))
-        self.bars.append(Bar(3, 1, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 3 - 30))
-        self.bars.append(Bar(3, 0, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 4 + 30))
-        self.bars.append(Bar(2, 1, (self.size_y - 300), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 5 + 60))
-        self.bars.append(Bar(1, 1, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 6 + 100))
+        self.bars.append(Bar(1, 0, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 1 - 100, player_sprite))
+        self.bars.append(Bar(2, 0, (self.size_y - 300), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 2 - 60, player_sprite))
+        self.bars.append(Bar(3, 1, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 3 - 30, player_sprite))
+        self.bars.append(Bar(3, 0, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 4 + 30, player_sprite))
+        self.bars.append(Bar(2, 1, (self.size_y - 300), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 5 + 60, player_sprite))
+        self.bars.append(Bar(1, 1, (self.size_y - 200), (1600/2) - (self.size_x/2) + ((size_x) / 7) * 6 + 100, player_sprite))
         self._background = background
         self._background_rect = self._background.get_rect()
 
@@ -132,4 +141,5 @@ class Kicker:
         window.blit(self._background, (0, 0))
 
     def draw(self, window, outline=None):
-        self.draw_background(window)
+        for bar in self.bars:
+            bar.draw(window)

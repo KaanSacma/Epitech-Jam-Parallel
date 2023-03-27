@@ -8,18 +8,19 @@ import pygame
 
 gameRunning = True
 ball = Ball([1600 / 2, 900 / 2], (10, 10), Image("./assets/images/ball.jpeg").get())
-kicker = Kicker(1200, 600)
+kicker = Kicker(1200, 600, Image("./assets/images/KICKer.jpg").get(), Image("./assets/images/player.png").get())
 z_pressed = False
 s_pressed = False
 up_pressed = False
 down_pressed = False
 e_pressed = False
 ZERO_pressed = False
-kicker = Kicker(1200, 600, Image("./assets/images/KICKer.jpg").get())
+scoreL = 0
+scoreR = 0
 
 
 def event_game_handler(event, window):
-    global gameRunning, z_pressed, s_pressed, up_pressed, down_pressed, kicker, ball
+    global gameRunning, z_pressed, s_pressed, up_pressed, down_pressed, kicker, ball, e_pressed, ZERO_pressed
 
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_ESCAPE:
@@ -62,13 +63,13 @@ def event_game_handler(event, window):
 def setBallSpawnDown():
     global ball
     ball.set_speed(0)
-    ball.set_spawn([1600 / 2, 1030])
+    ball.set_spawn([1600 / 2, 300])
 
 
 def setBallSpawnUp():
     global ball
     ball.set_speed(0)
-    ball.set_spawn([1600 / 2, 20])
+    ball.set_spawn([1600 / 2, 600])
 
 
 def draw_donut_circle(window):
@@ -110,8 +111,23 @@ def drawField(window):
     kicker.draw(window)
 
 
+def get_score(window):
+    global scoreL, scoreR
+
+    if ball.get_pos()[0] < 220 and ball.get_pos()[1] >= 450 and ball.get_pos()[1] <= 550:
+        scoreR += 1
+        setBallSpawnDown()
+        ball.set_direction([-1, -1])
+    elif ball.get_pos()[0] > 1300 and ball.get_pos()[1] >= 450 and ball.get_pos()[1] <= 550:
+        scoreL += 1
+        setBallSpawnUp()
+        ball.set_direction([1, 1])
+
+
 def gameLoop(window, running):
-    global gameRunning
+    global gameRunning, scoreR, scoreL
+    font = pygame.font.Font(None, 36)
+    pygame.font.init()
 
     gameRunning = running
     while gameRunning:
@@ -130,9 +146,14 @@ def gameLoop(window, running):
             kicker.charging(0)
         if ZERO_pressed:
             kicker.charging(1)
+        get_score(window)
         kicker.draw_background(window.get_screen())
         drawField(window.get_screen())
         ball.update(kicker)
         ball.draw(window.get_screen())
+        score_text = font.render("Score Player1: " + str(scoreL), True, (120, 120, 255))
+        window.get_screen().blit(score_text, (30, 10))
+        score_text2 = font.render("Score Player2: " + str(scoreR), True, (120, 120, 255))
+        window.get_screen().blit(score_text2, (1200, 10))
         pygame.display.flip()
         pygame.display.update()
